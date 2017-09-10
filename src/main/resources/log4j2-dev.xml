@@ -1,4 +1,8 @@
 <configuration>
+    <Properties>
+        <Property name="project-name">lzbruby-nettysocket</Property>
+    </Properties>
+
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" ignoreExceptions="false">
             <PatternLayout

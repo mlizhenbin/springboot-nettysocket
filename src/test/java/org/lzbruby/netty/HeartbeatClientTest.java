@@ -54,7 +54,7 @@ public class HeartbeatClientTest {
                     // decoder
                     ProtocolDecoder decoder = new ProtocolDecoder(
                             10000,
-                            14,
+                            15,
                             4,
                             0,
                             0,
@@ -77,6 +77,7 @@ public class HeartbeatClientTest {
             header.setMagicType(ProtocolMagicType.HEARTBEAT.getType());
             header.setChannel(0);
             header.setTradeNo(CharByteUtils.getBytes(new char[]{'E', 'C', 'H', 'O', '0', '0', '0', '1'}, Charsets.US_ASCII));
+            header.setFlag((byte) 0x01);
 
             // 组装报文体
             String body = "测试发生心跳检测." + DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");

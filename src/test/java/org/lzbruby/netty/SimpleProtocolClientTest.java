@@ -53,7 +53,7 @@ public class SimpleProtocolClientTest {
                     // decoder
                     ProtocolDecoder decoder = new ProtocolDecoder(
                             10000,
-                            14,
+                            15,
                             4,
                             0,
                             0,
@@ -76,6 +76,7 @@ public class SimpleProtocolClientTest {
             header.setMagicType(ProtocolMagicType.XML_SERIAL.getType());
             header.setChannel(0);
             header.setTradeNo(CharByteUtils.getBytes(new char[]{'P', 'R', 'O', 'B', '0', '0', '0', '1'}, Charsets.US_ASCII));
+            header.setFlag((byte) 0x01);
 
             // 组装报文体
             SimpleProtocolReq simpleProtocolReq = new SimpleProtocolReq();

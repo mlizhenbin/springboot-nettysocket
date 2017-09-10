@@ -24,9 +24,9 @@ public class ProtocolDecoder extends LengthFieldBasedFrameDecoder {
     public static final int AUTHORIZE_TRADE_NO_LEN = 8;
 
     /**
-     * 报文头长度：魔数(1个字节)+请求类型(1个字节)+渠道(4个字节)+交易码（8个字节）+报文体长度(4个字节)
+     * 报文头长度：魔数(1个字节)+请求类型(1个字节)+渠道(4个字节)+交易码（8个字节+标志位（1字节）+报文体长度(4个字节)
      */
-    public static final int AUTHORIZE_PROTOCOL_HEAD_LEN = 18;
+    public static final int AUTHORIZE_PROTOCOL_HEAD_LEN = 19;
 
 
     /**
@@ -75,6 +75,8 @@ public class ProtocolDecoder extends LengthFieldBasedFrameDecoder {
             for (int i = 0; i < tradeNo.length; i++) {
                 tradeNo[i] = in.readByte();
             }
+
+            byte flag = in.readByte();
             int bodySize = in.readInt();
 
             // 读取报文体，转换为字符串
@@ -83,7 +85,7 @@ public class ProtocolDecoder extends LengthFieldBasedFrameDecoder {
             buf.readBytes(req);
             String body = new String(req, charset);
 
-            ProtocolHeader header = new ProtocolHeader(magic, magicType, channel, tradeNo, bodySize);
+            ProtocolHeader header = new ProtocolHeader(magic, magicType, channel, tradeNo, flag, bodySize);
             ProtocolMsg msg = new ProtocolMsg();
             msg.setHeader(header);
             msg.setBody(body);

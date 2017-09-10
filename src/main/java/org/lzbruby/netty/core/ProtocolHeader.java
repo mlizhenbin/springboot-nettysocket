@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 功能描述：自定义报文头对象
  * <p/>
- * 报文头约定格式：魔数(1个字节)+请求类型(1个字节)+渠道(4个字节)+交易码（8个字节）+报文体长度(4个字节)
+ * 报文头约定格式：魔数(1个字节)+请求类型(1个字节)+渠道(4个字节)+交易码（8个字节）+标志位（1个字节）+ 报文体长度(4个字节)
  *
  * @author: lizhenbin
  * @email: lzbruby@163.com
@@ -38,6 +38,11 @@ public class ProtocolHeader implements Serializable {
     private byte[] tradeNo = new byte[8];
 
     /**
+     * 发生接收标志
+     */
+    private byte flag;
+
+    /**
      * 报文体长度（4个字节）
      */
     private int bodySize;
@@ -45,11 +50,12 @@ public class ProtocolHeader implements Serializable {
     public ProtocolHeader() {
     }
 
-    public ProtocolHeader(byte magic, byte magicType, int channel, byte[] tradeNo, int bodySize) {
+    public ProtocolHeader(byte magic, byte magicType, int channel, byte[] tradeNo, byte flag, int bodySize) {
         this.magic = magic;
         this.magicType = magicType;
         this.channel = channel;
         this.tradeNo = tradeNo;
+        this.flag = flag;
         this.bodySize = bodySize;
     }
 
@@ -85,6 +91,14 @@ public class ProtocolHeader implements Serializable {
         this.tradeNo = tradeNo;
     }
 
+    public byte getFlag() {
+        return flag;
+    }
+
+    public void setFlag(byte flag) {
+        this.flag = flag;
+    }
+
     public int getBodySize() {
         return bodySize;
     }
@@ -96,6 +110,6 @@ public class ProtocolHeader implements Serializable {
     @Override
     public String toString() {
         return "[magic=" + magic + ", magicType=" + magicType + ", channel=" + channel
-                + ", tradeNo=" + new String(tradeNo, Charsets.US_ASCII) + ", bodySize=" + bodySize + "]";
+                + ", tradeNo=" + new String(tradeNo, Charsets.US_ASCII) + "flag=" + flag + ", bodySize=" + bodySize + "]";
     }
 }

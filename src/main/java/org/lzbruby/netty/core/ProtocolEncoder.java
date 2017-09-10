@@ -54,6 +54,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<ProtocolMsg> {
         out.writeByte(header.getMagicType());
         out.writeInt(header.getChannel());
         out.writeBytes(header.getTradeNo());
+        out.writeByte(header.getFlag());
         out.writeInt(bodySize);
 
         // 报文体
