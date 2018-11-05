@@ -4,8 +4,12 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,8 @@ public class NettySocketServer {
 
     @Autowired
     private ProtocolInitializer initializer;
+
+    public static final String EPOLL_OS = "LINUX";
 
     /**
      * 加载Netty Server
@@ -64,13 +70,27 @@ public class NettySocketServer {
     public void startNettySocketService() throws Exception {
         int propertiesBossGroup = properties.getBossGroup();
         int propertiesWorkGroup = properties.getWorkGroup();
-        NioEventLoopGroup bossGroup = propertiesBossGroup > 0 ? new NioEventLoopGroup(propertiesBossGroup) : new NioEventLoopGroup();
-        NioEventLoopGroup workerGroup = propertiesWorkGroup > 0 ? new NioEventLoopGroup(propertiesWorkGroup) : new NioEventLoopGroup();
+
+        String osName = System.getProperty("os.name");
+        logger.info("spring init netty socket server finish. os name: {}", osName);
+
+        EventLoopGroup bossGroup;
+        EventLoopGroup workerGroup;
+        if (StringUtils.containsIgnoreCase(EPOLL_OS, osName)) {
+            bossGroup = propertiesBossGroup > 0 ? new EpollEventLoopGroup(propertiesBossGroup) : new EpollEventLoopGroup();
+            workerGroup = propertiesWorkGroup > 0 ? new EpollEventLoopGroup(propertiesWorkGroup) : new EpollEventLoopGroup();
+        } else {
+            bossGroup = propertiesBossGroup > 0 ? new NioEventLoopGroup(propertiesBossGroup) : new NioEventLoopGroup();
+            workerGroup = propertiesWorkGroup > 0 ? new NioEventLoopGroup(propertiesWorkGroup) : new NioEventLoopGroup();
+        }
 
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
+                    .channel(
+                            StringUtils.containsIgnoreCase(EPOLL_OS, osName) ?
+                                    EpollServerSocketChannel.class : NioServerSocketChannel.class
+                    )
                     .childHandler(initializer)
                     .option(ChannelOption.SO_BACKLOG, properties.getSoBacklog())
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeoutMillis())
