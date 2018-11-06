@@ -5,7 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.lzbruby.springboot-netty</groupId>
-    <artifactId>lzbruby-netty</artifactId>
+    <artifactId>springboot-netty</artifactId>
+    <name>springboot-netty</name>
     <version>1.0-SNAPSHOT</version>
 
     <repositories>
