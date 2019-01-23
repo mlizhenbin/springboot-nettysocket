@@ -16,8 +16,11 @@ public class SortTest {
     private static final Logger logger = LoggerFactory.getLogger(SortTest.class);
 
 
+    /**
+     * 冒泡
+     */
     @Test
-    public void maoPao() {
+    public void bubbleSort() {
         int[] v = {2, 3, 1, 3, 2, 6, 7, 8, 23, 27, 2, 3, 1, 0, 20};
         logger.info("冒泡排序：小——>大");
         for (int i = 0; i < v.length; i++) {
