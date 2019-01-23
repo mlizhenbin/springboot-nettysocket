@@ -103,9 +103,15 @@ public class NettySocketServer {
             logger.info("spring init netty socket server finish. listen port: {}", port);
             channelFuture.channel().closeFuture().sync();
         } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-            logger.debug("客户端断开Server连接，关闭NioEventLoopGroup.");
+            if (workerGroup != null) {
+                workerGroup.shutdownGracefully();
+            }
+
+            if (bossGroup != null) {
+                bossGroup.shutdownGracefully();
+            }
+
+            logger.info("客户端断开Server连接，关闭NioEventLoopGroup.");
         }
     }
 
